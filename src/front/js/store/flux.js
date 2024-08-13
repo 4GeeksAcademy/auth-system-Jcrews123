@@ -21,10 +21,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 
+			login: async(username,password) => {
+				const opts = {
+					method: "POST",
+					headers:{
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						"username": username,
+						"password": password
+					})
+				}
+				const resp = await fetch("https://glowing-goldfish-jjr6gjqxxwrgfqx6g-3001.app.github.dev/api/token", opts)
+					.then(resp => {
+						if(resp.status === 200) resp.json();
+						else alert("there has been some error");
+					})
+					.then(data => {
+						sessionStorage.setItem("token", data.access_token)
+					})
+					.catch(error => {
+						console.error("there was an error", error)
+					})
+			},
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
+					const resp = await fetch(process.env.BACKEND_URL + "/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
