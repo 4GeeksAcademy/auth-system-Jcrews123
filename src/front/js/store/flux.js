@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			token: null,
 			message: null,
 			demo: [
 				{
@@ -20,7 +21,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-
+			syncTokenFromSessionStore: () =>{
+				const token = sessionStorage.getItem("token")
+				if(token && token !="" && token != undefined) setStore({ token: token})
+			},
+			logout: () =>{
+				sessionStorage.removeItem("token")
+				setStore({ token: null})
+			},
 			login: async(username,password) => {
 				const opts = {
 					method: "POST",
@@ -32,22 +40,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"password": password
 					})
 				}
-				const resp = await fetch("https://glowing-goldfish-jjr6gjqxxwrgfqx6g-3001.app.github.dev/api/token", opts)
-					.then(resp => {
-						if(resp.status === 200) resp.json();
-						else alert("there has been some error");
-					})
-					.then(data => {
-						sessionStorage.setItem("token", data.access_token)
-					})
-					.catch(error => {
-						console.error("there was an error", error)
-					})
+				try{
+					const resp = await fetch("https://glowing-goldfish-jjr6gjqxxwrgfqx6g-3001.app.github.dev/api/token", opts)
+					if(resp.status === 200) { 
+						alert("there has been some error");
+						return false
+					}
+					const data = await resp.json();
+					console.log("this came from the backend", data);
+					sessionStorage.setItem("token", data.access_token)
+					setStore({ token: data.access_token})
+					return true;
+				}
+				catch(error){
+					console.error("there was an error", error)
+				}
 			},
 			getMessage: async () => {
+				const store = getStore();
+				const opts = {
+					headers:{
+						"Authorization": "Bearer" + store.token				
+					}
+				}
 				try{
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/hello")
+					const resp = await fetch("https://glowing-goldfish-jjr6gjqxxwrgfqx6g-3001.app.github.dev/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
