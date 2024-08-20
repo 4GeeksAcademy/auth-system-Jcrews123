@@ -13,7 +13,7 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route("/token", methods=["POST"])
+@api.route("/token", methods=["POST", "OPTIONS"])
 def create_token():
     username = request.json.get("username", None)
     password = request.json.get("password", None)

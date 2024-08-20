@@ -41,7 +41,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 				}
 				try{
-					const resp = await fetch("https://glowing-goldfish-jjr6gjqxxwrgfqx6g-3001.app.github.dev/api/token", opts)
+					const resp = await fetch(process.env.BACKEND_URL + "api/login", opts)
 					if(resp.status === 200) { 
 						alert("there has been some error");
 						return false
