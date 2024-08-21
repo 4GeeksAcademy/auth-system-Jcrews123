@@ -29,20 +29,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 				sessionStorage.removeItem("token")
 				setStore({ token: null})
 			},
-			login: async(username,password) => {
+			login: async(email,password) => {
 				const opts = {
 					method: "POST",
 					headers:{
 						"Content-Type": "application/json"
 					},
 					body: JSON.stringify({
-						"username": username,
+						"email": email,
 						"password": password
 					})
 				}
 				try{
-					const resp = await fetch(process.env.BACKEND_URL + "api/login", opts)
-					if(resp.status === 200) { 
+					const resp = await fetch(process.env.BACKEND_URL + "api/token", opts)
+					if(!resp.status === 200) { 
 						alert("there has been some error");
 						return false
 					}

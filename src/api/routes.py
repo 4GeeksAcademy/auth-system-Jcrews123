@@ -13,24 +13,24 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route("/token", methods=["POST", "OPTIONS"])
+@api.route("/token", methods=["POST"])
 def create_token():
-    username = request.json.get("username", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if username != "test" or password != "test":
-        return jsonify({"msg": "Bad username or password"}), 401
+    if email != "test" or password != "test":
+        return jsonify({"msg": "Bad email or password"}), 401
 
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
-@api.route("/hello", methods=["GET"])
-@jwt_required()
-def get_hello():
-    username = get_jwt_identity()
-    dictionary = {
-        "message": "hello " + username
-    }
-    return jsonify(dictionary)
+# @api.route("/hello", methods=["GET"])
+# @jwt_required()
+# def get_hello():
+#     username = get_jwt_identity()
+#     dictionary = {
+#         "message": "hello " + username
+#     }
+#     return jsonify(dictionary)
 # @api.route("/log-in", methods = ["POST"])
 # def handle_log_in():
 #     body = request.json

@@ -37,7 +37,7 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
-CORS(app)
+# CORS(app)
 
 # add the admin
 setup_admin(app)
